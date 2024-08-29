@@ -3,14 +3,6 @@ pipeline {
 
     stages {
         
-#        stage('Checkout') {
- #           steps {
- #               script {
- #                   git branch: "main", url: 'https://github.com/Alielhaba/flask-app'
-   #             }
-  #          }    
-  #      }
-        
         stage('Docker Login & Build Image') {
             steps {
                 script {
