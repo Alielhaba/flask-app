@@ -6,14 +6,16 @@ pipeline {
         stage('Docker Login & Build Image') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'docker', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                        sh """
-                            docker login -u $USERNAME -p $PASSWORD
-                            docker build -t flask-app:latest .
-                            docker tag flask-app:latest alielhabal70/flask-app:latest
-                            docker push alielhabal70/flask-app:latest
-                        """
-                    }
+                    if (params.Env == "Deploy" || params.Env == "Build" ) {
+                        withCredentials([usernamePassword(credentialsId: 'docker', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                            sh """
+                                docker login -u $USERNAME -p $PASSWORD
+                                docker build -t flask-app:latest .
+                                docker tag flask-app:latest alielhabal70/flask-app:latest
+                                docker push alielhabal70/flask-app:latest
+                            """
+                        }
+                    }    
                 }     
             }
         }
@@ -21,9 +23,11 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
+                    if (params.Env == "Deploy"){
                         sh """
                             docker run -d -p 5000:5000 alielhabal70/flask-app:latest
                         """
+                    }    
                 }    
             }
         }
